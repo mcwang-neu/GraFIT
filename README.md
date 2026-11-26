@@ -2,7 +2,7 @@
 
 ## This is an anonymous code repository for GraFIT. 
 
-To reproduce the results in our paper, you need to `pip install -r requirements.txt```. And then: 
+To reproduce the results in our paper, you need to `pip install -r requirements.txt`. And then: 
 
 ```
 
