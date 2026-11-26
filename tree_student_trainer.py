@@ -1,5 +1,3 @@
-"""用 XGBoost 学生模型进行渐进式 GNN-to-Tree 蒸馏。"""
-
 import csv
 import os
 import shutil
@@ -12,14 +10,12 @@ import utils
 
 
 def _as_numpy(value, dtype=None):
-    # XGBoost 在这里使用 CPU NumPy 数组。
     if torch.is_tensor(value):
         value = value.detach().cpu().numpy()
     return np.asarray(value, dtype=dtype)
 
 
 def _softmax(logits):
-    # 按行计算数值稳定的 softmax，将 logits 转为类别概率。
     logits = logits - np.max(logits, axis=1, keepdims=True)
     exp_logits = np.exp(logits)
     return exp_logits / np.maximum(exp_logits.sum(axis=1, keepdims=True), 1e-12)
@@ -41,7 +37,6 @@ def _reshape_margins(raw_predictions, num_rows, num_classes):
 
 
 def _classification_metrics(probabilities, labels, mask):
-    # 只在给定 mask（验证集或测试集）上计算准确率和交叉熵。
     selected_probabilities = np.clip(probabilities[mask], 1e-12, 1.0)
     selected_labels = labels[mask]
     row_ids = np.arange(selected_labels.shape[0])
@@ -51,7 +46,6 @@ def _classification_metrics(probabilities, labels, mask):
 
 
 def _get_stage_rounds(args):
-    # 将命令行中的轮数解析为递增且不重复的检查点。
     try:
         rounds = sorted(set(int(value.strip()) for value in args.xgb_stage_rounds.split(",") if value.strip()))
     except ValueError as exc:
@@ -70,7 +64,6 @@ def _make_distillation_objective(teacher_probabilities, labels, train_mask, alph
     num_nodes, num_classes = teacher_probabilities.shape
     train_ids = np.flatnonzero(train_mask)
     train_targets = np.eye(num_classes, dtype=np.float32)[labels[train_ids]]
-    # XGBoost 按样本累加梯度/Hessian；以下系数把平均损失换成等价的总和尺度。
     distill_scale = alpha
     supervised_scale = (1.0 - alpha) * num_nodes / float(max(len(train_ids), 1))
 
@@ -79,17 +72,14 @@ def _make_distillation_objective(teacher_probabilities, labels, train_mask, alph
         original_shape = predictions.shape
         margins = _reshape_margins(predictions, num_nodes, num_classes)
 
-        # 蒸馏项使用温度缩放概率；硬标签 CE 使用普通 softmax。
         teacher_student_prob = _softmax(margins / temperature)
         hard_student_prob = _softmax(margins)
 
-        # 多分类 softmax 使用对角 Hessian 近似，供 XGBoost 建树优化。
         grad = (distill_scale / temperature) * (teacher_student_prob - teacher_probabilities)
         hess = (distill_scale / (temperature ** 2)) * np.maximum(
             teacher_student_prob * (1.0 - teacher_student_prob), 1e-6
         )
 
-        # 教师软标签覆盖全图节点；真实标签只参与训练集节点的损失。
         if len(train_ids):
             grad[train_ids] += supervised_scale * (hard_student_prob[train_ids] - train_targets)
             hess[train_ids] += supervised_scale * np.maximum(
@@ -106,7 +96,6 @@ def _make_distillation_objective(teacher_probabilities, labels, train_mask, alph
 
 
 def train_tree_student(dataset, args, teacher_logits_list):
-    """每个 run 训练一个 Booster，并评估其不同轮数的累积前缀。"""
     try:
         import xgboost as xgb
     except ImportError as exc:
@@ -118,7 +107,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
         raise ValueError("--xgb_temperature must be positive")
 
     stage_rounds = _get_stage_rounds(args)
-    # 当前实验遵循传导式节点分类：全图特征可用于蒸馏，标签按 mask 隔离。
     features = _as_numpy(dataset.x, np.float32)
     labels = _as_numpy(dataset.y, np.int64).reshape(-1)
     train_mask = _as_numpy(dataset.train_mask, bool).reshape(-1)
@@ -132,7 +120,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
     if not train_mask.any() or not val_mask.any() or not test_mask.any():
         raise ValueError("The dataset must have non-empty train, validation, and test masks")
 
-    # DMatrix 保存全图节点特征；模型预测后再按 val/test mask 统计指标。
     dmatrix = xgb.DMatrix(features)
     all_stage_rows = []
     best_test_accuracies = []
@@ -159,12 +146,10 @@ def train_tree_student(dataset, args, teacher_logits_list):
                 f"expected {(num_nodes, num_classes)}"
             )
 
-        # 将教师 logits 转为软标签概率，供自定义蒸馏目标使用。
         teacher_probabilities = _softmax(teacher_logits / args.xgb_temperature).astype(np.float32)
         objective = _make_distillation_objective(
             teacher_probabilities, labels, train_mask, args.alpha, args.xgb_temperature
         )
-        # 使用 CPU hist 建树；每个 boosting round 对多分类会生成一组类别树。
         params = {
             "objective": "multi:softprob",
             "num_class": num_classes,
@@ -195,7 +180,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
         os.makedirs(run_dir, exist_ok=True)
         run_stage_rows = []
         for rounds in stage_rounds:
-            # 计时包含预测和 softmax；特征转 NumPy、DMatrix 构建等预处理在计时外。
             start_inference = time.perf_counter()
             margins = booster.predict(
                 dmatrix,
@@ -205,7 +189,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
             probabilities = _softmax(_reshape_margins(margins, num_nodes, num_classes))
             inference_seconds = time.perf_counter() - start_inference
 
-            # 测试指标仅作报告；下方最佳阶段只按验证集 log-loss 选择。
             val_accuracy, val_loss = _classification_metrics(probabilities, labels, val_mask)
             test_accuracy, test_loss = _classification_metrics(probabilities, labels, test_mask)
 
@@ -230,7 +213,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
                 f"Inference: {inference_seconds:.4f}s"
             )
 
-        # 用验证集 log-loss 选阶段，不用测试标签参与模型选择。
         best_row = min(run_stage_rows, key=lambda row: row["val_logloss"])
         best_row["best_by_validation"] = True
         shutil.copy2(
@@ -241,7 +223,6 @@ def train_tree_student(dataset, args, teacher_logits_list):
         best_inference_times.append(best_row["inference_seconds"])
         all_stage_rows.extend(run_stage_rows)
 
-    # CSV 采用追加模式；重复实验会保留历史行，需结合配置区分实验。
     fieldnames = list(all_stage_rows[0].keys())
     write_header = not os.path.exists(stage_csv) or os.path.getsize(stage_csv) == 0
     with open(stage_csv, "a", newline="", encoding="utf-8") as csv_file:
