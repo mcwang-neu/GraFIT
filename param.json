@@ -1,0 +1,435 @@
+{
+    "teacher":
+    {
+        "cora":{
+            "GCN":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9
+            },
+            "GAT":
+            {
+                "hid_dim" : 16,
+                "dropout" : 0.9,
+                "learning_rate" : 0.01,
+                "wd" : 5e-9
+            },
+            "SAGE":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.03,
+                "wd" : 5e-9
+            }
+
+        },
+        "citeseer":{
+            "GCN":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.7,
+                "learning_rate" : 0.001,
+                "wd" : 5e-4
+            },
+            "GAT":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.3,
+                "learning_rate" : 0.005,
+                "wd" : 5e-4
+            },
+            "SAGE":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.005,
+                "wd" : 5e-4
+            }
+
+        },
+        "pubmed":{
+            "GCN":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.05,
+                "wd" : 5e-9
+            },
+            "GAT":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.005,
+                "wd" : 5e-9
+            },
+            "SAGE":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.9,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7
+            }
+
+        },
+        "coauthor":{
+            "GCN":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9
+            },
+            "GAT":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.9,
+                "learning_rate" : 0.001,
+                "wd" : 5e-4
+            }
+
+        },
+        "physics":{
+            "GCN":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.1,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7
+            },
+            "GAT":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "SAGE":
+            {
+                "hid_dim" : 32,
+                "dropout" : 0.9,
+                "learning_rate" : 0.02,
+                "wd" : 5e-4
+            }
+
+        },
+        "photo":{
+            "GCN":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "GAT":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            }
+        },
+        "computers":{
+            "GCN":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "GAT":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "SAGE":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            }
+        },
+        "ogbn-arxiv":{
+            "GCN":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4
+            },
+            "GAT":
+            {
+                "hid_dim" : 32,
+                "dropout" : 0.9,
+                "learning_rate" : 0.002,
+                "wd" : 5e-7
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7
+            }
+        },
+        "ogbn-products":{
+            "GCN":
+            {
+                "hid_dim" : 1024,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 2
+            },
+            "GAT":
+            {
+                "hid_dim" : 1024,
+                "dropout" : 0.9,
+                "learning_rate" : 0.002,
+                "wd" : 5e-7,
+                "student_number" : 2
+            },
+            "SAGE":
+            {
+                "hid_dim" : 1024,
+                "dropout" : 0,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7,
+                "student_number" : 2
+            }
+        }
+    },
+    "student":
+    {
+        "cora":{
+            "GCN":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.3,
+                "learning_rate" : 0.0001,
+                "wd" : 5e-4,
+                "student_number": 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 16,
+                "dropout" : 0.8,
+                "learning_rate" : 0.001,
+                "wd" : 5e-4,
+                "student_number" : 6
+            },
+            "SAGE":
+            {
+                "hid_dim" : 16,
+                "dropout" : 0.7,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9,
+                "student_number" : 2
+            }
+
+        },
+        "pubmed":{
+            "GCN":
+            {
+                "hid_dim" : 32,
+                "dropout" : 0.5,
+                "learning_rate" : 0.0001,
+                "wd" : 5e-7,
+                "student_number" : 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 32,
+                "dropout" : 0.7,
+                "learning_rate" : 0.001,
+                "wd" : 0.005,
+                "student_number" : 5
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.7,
+                "learning_rate" : 0.02,
+                "wd" : 5e-9,
+                "student_number" : 3
+            }
+
+        },
+        "coauthor":{
+            "GCN":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9,
+                "student_number" : 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9,
+                "student_number" : 5
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9,
+                "student_number" : 5
+            }
+
+        },
+        "physics":{
+            "GCN":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.1,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7,
+                "student_number" : 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-4,
+                "student_number" : 5
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.5,
+                "learning_rate" : 0.001,
+                "wd" : 5e-4,
+                "student_number" : 5
+            }
+
+        },
+        "photo":{
+            "GCN":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0.8,
+                "learning_rate" : 0.001,
+                "wd" : 5e-9,
+                "student_number" : 6
+            },
+            "GAT":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0.5,
+                "learning_rate" : 0.0001,
+                "wd" : 5e-7,
+                "student_number" : 4
+            },
+            "SAGE":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-7,
+                "student_number" : 5
+            }
+        },
+        "computers":{
+            "GCN":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 2
+            },
+            "GAT":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 2
+            },
+            "SAGE":
+            {
+                "hid_dim" : 128,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 2
+            }
+        },
+        "ogbn-arxiv":{
+            "GCN":
+            {
+                "hid_dim" : 64,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 32,
+                "dropout" : 0.9,
+                "learning_rate" : 0.002,
+                "wd" : 5e-7,
+                "student_number" : 5
+            },
+            "SAGE":
+            {
+                "hid_dim" : 256,
+                "dropout" : 0,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7,
+                "student_number" : 5
+            }
+        },
+        "ogbn-products":{
+            "GCN":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0.5,
+                "learning_rate" : 0.01,
+                "wd" : 5e-4,
+                "student_number" : 5
+            },
+            "GAT":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0.9,
+                "learning_rate" : 0.002,
+                "wd" : 5e-7,
+                "student_number" : 5
+            },
+            "SAGE":
+            {
+                "hid_dim" : 512,
+                "dropout" : 0,
+                "learning_rate" : 0.001,
+                "wd" : 5e-7,
+                "student_number" : 5
+            }
+        }
+    }
+}
